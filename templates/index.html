@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .predicted-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            color: #667eea;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .predicted-price {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 House Price Predictor</h1>
+        <p class="subtitle">Enter house features to predict the sale price</p>
+
+        <form id="predictionForm">
+            <div class="feature-grid">
+                <div class="form-group">
+                    <label for="overall_qual">Overall Quality (1-10)</label>
+                    <input type="number" id="overall_qual" name="overall_qual" 
+                           min="1" max="10" step="1" value="7" required>
+                    <div class="input-hint">Material and finish quality</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="year_built">Year Built</label>
+                    <input type="number" id="year_built" name="year_built" 
+                           min="1800" max="2024" step="1" value="2000" required>
+                    <div class="input-hint">Original construction year</div>
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="form-group">
+                    <label for="gr_liv_area">Living Area (sq ft)</label>
+                    <input type="number" id="gr_liv_area" name="gr_liv_area" 
+                           min="0" step="1" value="1500" required>
+                    <div class="input-hint">Above grade living area</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="total_bsmt_sf">Basement Area (sq ft)</label>
+                    <input type="number" id="total_bsmt_sf" name="total_bsmt_sf" 
+                           min="0" step="1" value="1000" required>
+                    <div class="input-hint">Total basement area</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="garage_cars">Garage Size (cars)</label>
+                <input type="number" id="garage_cars" name="garage_cars" 
+                       min="0" max="5" step="1" value="2" required>
+                <div class="input-hint">Number of cars that fit</div>
+            </div>
+
+            <div class="form-group">
+                <label for="neighborhood">Neighborhood</label>
+                <select id="neighborhood" name="neighborhood" required>
+                    {% for n in neighborhoods %}
+                    <option value="{{ n }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" id="predictBtn">Predict Price</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <p>Calculating prediction...</p>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-label">Predicted Sale Price:</div>
+            <div class="predicted-price" id="predictedPrice">$0</div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const resultContainer = document.getElementById('resultContainer');
+        const predictedPrice = document.getElementById('predictedPrice');
+        const errorMessage = document.getElementById('errorMessage');
+        const loading = document.getElementById('loading');
+        const predictBtn = document.getElementById('predictBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide previous results
+            resultContainer.classList.remove('show');
+            errorMessage.classList.remove('show');
+            loading.classList.add('show');
+            predictBtn.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    predictedPrice.textContent = data.predicted_price;
+                    resultContainer.classList.add('show');
+                } else {
+                    throw new Error(data.error || 'Prediction failed');
+                }
+            } catch (error) {
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.classList.add('show');
+            } finally {
+                loading.classList.remove('show');
+                predictBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

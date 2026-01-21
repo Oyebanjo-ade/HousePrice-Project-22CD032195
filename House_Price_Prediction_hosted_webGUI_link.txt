@@ -1,0 +1,22 @@
+House Price Prediction System
+Deployment Information
+
+
+STUDENT INFORMATION:
+
+Name: OYEBANJO ADEJOJU DEBORAH
+Matric Number:22CD032195
+
+
+PROJECT DETAILS:
+
+Machine Learning Algorithm Used: Random Forest Regressor
+Model Persistence Method: Joblib
+
+
+
+DEPLOYMENT INFORMATION
+Live Application URL: 
+
+
+GitHub Repository: 
